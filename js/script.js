@@ -82,25 +82,29 @@ function drawCharts(follower_history) {
 
 
 function drawBasic(follower_history) {
-	values = follower_history.map(entry => {
-		arr = Object.values(entry).reverse();
+	const values = follower_history.map(entry => {
+		let arr = Object.values(entry).reverse();
 		arr[0] = new Date(arr[0]*1000);
 		return arr;
 	});
 	console.log(values)
-	var data = new google.visualization.DataTable();
+	let data = new google.visualization.DataTable();
 	data.addColumn('date', 'Zeit');
 	data.addColumn('number', 'Abonnenten');
 
 	data.addRows(values);
 
-	var options = {
+	let options = {
 		hAxis: {
 			title: 'Time'
 		},
 		vAxis: {
 			title: 'Abonnenten'
-		}
+		},explorer: {
+			actions: ['dragToZoom', 'rightClickToReset'],
+			axis: 'horizontal',
+			keepInBounds: true,
+			maxZoomIn: 4.0}
 	};
 
 	var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
