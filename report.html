@@ -2,11 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta content="width=device-width" name="viewport" />
     <title>Instalyzer</title>
     <script
             src="https://code.jquery.com/jquery-3.3.1.min.js"
             integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
             crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <!-- Eigene Imports-->
     <link rel="stylesheet" href="css/stylesheet.css">
     <script src="js/script.js"></script>
@@ -14,28 +16,28 @@
 <body>
     <div id="main">
         <div id="header">
-            <span id="username">kianenix</span>
-            <img id="avatar" src="https://scontent-ber1-1.cdninstagram.com/vp/138df75b50788155b99c6306ab045bd7/5CDC6B9E/t51.2885-19/11348199_1155455634482755_356009780_a.jpg?_nc_ht=scontent-ber1-1.cdninstagram.com" alt="Avatar">
+            <span id="username"></span>
+            <img id="avatar" src="assets/user_placeholder.png" alt="Avatar">
         </div>
         <div id="basic-info-container">
             <div id="basic-info-box-left">
-                <span id="full-name"><b>Kian Lütke</b></span>
-                <span id="bio">Kleiner Grüner Kaktus lelelele lelelsfsf</span>
+                <span id="full-name"><b></b></span>
+                <span id="bio"></span>
             </div>
             <div id="basic-info-box-right">
                 <table class="table">
                     <tbody>
                     <tr>
                         <td><strong>Abonnenten:</strong></td>
-                        <td id="follower"><strong>3.752.057</strong></td>
+                        <td ><strong id="follower"></strong></td>
                     </tr>
                     <tr>
                         <td>Abonnements:</td>
-                        <td id="followings">23</td>
+                        <td id="followings"></td>
                     </tr>
                     <tr>
                         <td>Beiträge:</td>
-                        <td id="media">23</td>
+                        <td id="media"></td>
                     </tr>
 
                     </tbody>
@@ -47,6 +49,7 @@
             <br>
             <span>Die Daten werden ausgewertet...</span>
         </div>
+        <div id="chart_div"></div>
     </div>
 </body>
 </html>

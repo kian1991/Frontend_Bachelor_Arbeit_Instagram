@@ -49,8 +49,12 @@ form{
 
 
 
-/* Mobile Ansicht kein Rand */
-/*todo*/
+/* Schmaler Bildschirm kein Rand */
+@media only screen and (max-width: 900px) {
+    #main {
+        margin: unset;
+    }
+}
 
 
 

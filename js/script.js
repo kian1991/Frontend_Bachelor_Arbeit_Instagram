@@ -14,7 +14,6 @@ function getFirstUrlParameter() {
     return query.split('=')[1];
 }
 
-
 function getUserFromAPI(username, limit) {
 	let json = {};
 	$.ajax({
@@ -30,7 +29,11 @@ function getUserFromAPI(username, limit) {
 			},
 			202: response => {
 				fillBasicInfo(response);
-				setLoading(true);
+				if(response.error) {
+					alert('Benutzer nicht gefunden. Bitte nocheinmal versuchen.')
+					window.location = 'index.html'
+				}
+				if(response.media_count > 0) setLoading(true);
 				setTimeout(() => {
 					getUserFromAPI(username, limit)
 				}, REFRESH_INTERVAL)
@@ -59,7 +62,50 @@ function fillBasicInfo(accountData){
 	$('#follower').text(accountData.follower_count)
 	$('#followings').text(accountData.following_count)
 	$('#media').text(accountData.media_count)
-	if (accountData.is_private) setPrivate();
+	if (accountData.is_private){
+		setPrivate();
+	}else if(accountData.follower_count_history) {
+		drawCharts(accountData.follower_count_history)
+	}
+}
+
+/**
+
+ Visualisierung der Daten in google Charts
+
+ **/
+
+function drawCharts(follower_history) {
+	google.charts.load('current', {packages: ['corechart', 'line']});
+	google.charts.setOnLoadCallback(() => drawBasic(follower_history));
+}
+
+
+function drawBasic(follower_history) {
+	values = follower_history.map(entry => {
+		arr = Object.values(entry).reverse();
+		arr[0] = new Date(arr[0]*1000);
+		return arr;
+	});
+	console.log(values)
+	var data = new google.visualization.DataTable();
+	data.addColumn('date', 'Zeit');
+	data.addColumn('number', 'Abonnenten');
+
+	data.addRows(values);
+
+	var options = {
+		hAxis: {
+			title: 'Time'
+		},
+		vAxis: {
+			title: 'Abonnenten'
+		}
+	};
+
+	var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+
+	chart.draw(data, options);
 }
 
 
