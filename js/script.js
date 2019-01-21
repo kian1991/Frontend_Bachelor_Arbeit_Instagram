@@ -3,6 +3,7 @@
  */
 // Konstanten
 const API_URL = 'http://api.instalyzer.ml:5000/users/'
+const REFRESH_INTERVAL = 10 * 1000; // in ms
 const API_URL_DEBUG = 'http://localhost:5000/users/'
 
 
@@ -20,20 +21,33 @@ function getUserFromAPI(username, limit) {
 		url: API_URL + username,
 		type: "GET",
 		crossDomain: true,
-		data: '?limit=' + limit,
+		data: 'limit=' + limit,
 		dataType: "json",
 		statusCode: {
 			200: response => {
-				fillBasicInfo(response) //todo 202 Wait for
+				setLoading(false);
+				fillBasicInfo(response) //todo Errorhandling
 			},
 			202: response => {
-                json = response
+				fillBasicInfo(response);
+				setLoading(true);
+				setTimeout(() => {
+					getUserFromAPI(username, limit)
+				}, REFRESH_INTERVAL)
 			}
 		},
 		error: function (xhr, status) {
 			alert("error");
 		}
 	});
+}
+
+function setLoading(isLoading) {
+	$('#loading-container').css('display', isLoading ? 'flex' : 'none');
+}
+
+function setPrivate() {
+	$('#loading-container').html('<strong> Profil ist privat. </strong>')
 }
 
 function fillBasicInfo(accountData){
@@ -45,6 +59,7 @@ function fillBasicInfo(accountData){
 	$('#follower').text(accountData.follower_count)
 	$('#followings').text(accountData.following_count)
 	$('#media').text(accountData.media_count)
+	if (accountData.is_private) setPrivate();
 }
 
 
