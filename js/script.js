@@ -1,6 +1,7 @@
 /*
 	Dieses Script ist.....
  */
+
 // Konstanten
 const API_URL = 'http://api.instalyzer.ml:5000/users/'
 const REFRESH_INTERVAL = 10 * 1000; // in ms
@@ -8,6 +9,7 @@ const API_URL_DEBUG = 'http://localhost:5000/users/'
 
 
 // Funktionen
+
 // Read a page's GET URL variables and return them as an associative array.
 function getFirstUrlParameter() {
     const query = window.location.href.slice(window.location.href.indexOf('?') + 1);
@@ -15,7 +17,6 @@ function getFirstUrlParameter() {
 }
 
 function getUserFromAPI(username, limit) {
-	let json = {};
 	$.ajax({
 		url: API_URL + username,
 		type: "GET",
@@ -45,6 +46,10 @@ function getUserFromAPI(username, limit) {
 	});
 }
 
+
+/*
+	Oberflächen verändernde funktionen
+*/
 function setLoading(isLoading) {
 	$('#loading-container').css('display', isLoading ? 'flex' : 'none');
 }
@@ -64,59 +69,32 @@ function fillBasicInfo(accountData){
 	$('#media').text(accountData.media_count)
 	if (accountData.is_private){
 		setPrivate();
-	}else if(accountData.follower_count_history) {
-		drawCharts(accountData.follower_count_history)
+	}else  {
+		drawCharts(accountData)
 	}
 }
 
 /**
-
- Visualisierung der Daten in google Charts
-
+ 	Visualisierung der Daten in google Charts
  **/
 
-function drawCharts(follower_history) {
+function drawCharts(accountData) {
 	google.charts.load('current', {packages: ['corechart', 'line']});
-	google.charts.setOnLoadCallback(() => drawBasic(follower_history));
+	if(accountData.follower_count_history.length > 1) {
+		google.charts.setOnLoadCallback(() => drawFollowerChart(accountData.follower_count_history));
+	}
+	if(accountData.media_count > 0) {
+		google.charts.setOnLoadCallback(() => drawMediaTimeEngagementChart(accountData.media));
+		google.charts.setOnLoadCallback(() => drawTopTenHashtags(accountData.hashtags));
+	}
 }
 
-
-function drawBasic(follower_history) {
-	const values = follower_history.map(entry => {
-		let arr = Object.values(entry).reverse();
-		arr[0] = new Date(arr[0]*1000);
-		return arr;
-	});
-	console.log(values)
-	let data = new google.visualization.DataTable();
-	data.addColumn('date', 'Zeit');
-	data.addColumn('number', 'Abonnenten');
-
-	data.addRows(values);
-
-	let options = {
-		hAxis: {
-			title: 'Time'
-		},
-		vAxis: {
-			title: 'Abonnenten'
-		},explorer: {
-			actions: ['dragToZoom', 'rightClickToReset'],
-			axis: 'horizontal',
-			keepInBounds: true,
-			maxZoomIn: 4.0}
-	};
-
-	var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-
-	chart.draw(data, options);
-}
 
 
 // DEBUG
 
 $(document).ready(function () {
-	getUserFromAPI(getFirstUrlParameter(), 20)
+	getUserFromAPI(getFirstUrlParameter(), 200)
 });
 
 
