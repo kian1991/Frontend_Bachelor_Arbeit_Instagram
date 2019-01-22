@@ -1,7 +1,7 @@
 /* Dies ist das...*/
 
-/* Import der Schriftart */
-@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+/* Import der Schriftarten */
+@import url('https://fonts.googleapis.com/css?family=Open+Sans|Pacifico');
 
 /* Variablendeklarationen wie zB. die Farbgebung der Seite */
 
@@ -20,31 +20,33 @@ html, body{
     font-family: 'Open Sans', sans-serif;
 }
 
+h1{
+    font-family: 'Pacifico', cursive;
+    font-weight: 200;
+    font-size: 5vw;
+    color: var(--color-font-dark);
+    margin: auto auto -2vw 4vw;
+}
+
+
+
 td {
-    padding-right: 2em;
+    padding-right: 2vw;
     text-align: end;
 }
 
-form{
-    display: flex;
-    flex-direction: row;
-    height: 3.6em;
-    align-items: center;
-    width: 100%;
-    margin-top: 13.3em;
-}
 
 #main{
     box-shadow: 0 4px 8px 0 var(--color-shadow), 0 6px 20px 0 var(--color-shadow);
-    height: 100%;
+    height: 200%;
     background: var(--color-background);
-    margin: 3em;
+    margin: 3vw;
 }
 
 .index{ /* überschreibt Werte der normalen Main ID, für die index-Seite */
-    height: 60% !important;
-    margin: 10% auto auto auto !important;
-    width: 60% !important;
+    height: 40vw !important;
+    margin: 3vw auto auto auto !important;
+    width: 60vw !important;
 }
 
 
@@ -63,13 +65,29 @@ form{
 .button{
     background-color: var(--color-button);
     border: none;
-    border-radius: 6px;
+    border-radius: 1vw;
     color: white;
-    padding: 15px 32px;
+    padding: 0.3vw 1.2vw;
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-size: 1.2em;
+    font-size: 1.2vw;
+    margin-top: 2vw;
+}
+
+.button-back{
+    font-size: 4vw;
+    margin: 1vw 0 auto 0.6vw;
+    background: none;
+    border: none;
+}
+
+.button-back>i{
+    color: var(--color-button);
+}
+
+.button-back>i:hover{
+    text-shadow: 0 4px 8px 0 var(--color-shadow), 0 6px 20px 0 var(--color-shadow);
 }
 
 .button:hover{
@@ -77,31 +95,69 @@ form{
 }
 
 .text-field{
-    width: 16em;
+    width: 16vw;
     padding: 12px;
     border: 1px solid #ccc;
     border-radius: 4px;
     resize: vertical;
     margin: 12%;
-    font-size: 1.2em;
+    font-size: 1.2vw;
 }
 
+input {
+    font-size: 1vw;
+    padding: 0.3vw 0.3vw 0.2vw 2vw;
+    width: 10vw;
+    border: solid 1px lightgray;
+    border-radius: 20px;
+}
+
+label {
+    background-color: var(--color-primary);
+    font-size: 1vw;
+    padding: 0.2vw 0.7vw 0.2vw 0.7vw;
+    border-radius: 1vw;
+    color: white;
+    margin-right: -2vw;
+    position: relative;
+}
+
+#form-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: baseline;
+    width: 100%;
+    margin-top: 7vw;
+}
+
+form {
+    margin-left: auto;
+    margin-right: 5vw;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
 
 /* Kopfbereich der Webseite */
 
-#header{
+header{
     border-bottom: 2.5px solid var(--color-secondary);
-    height: 15em;
+    height: 15vw;
     background: var(--color-primary);
     display: flex;
     flex-direction: row-reverse;
 }
 
-#header>span{
-    margin: auto 4em 0 auto;
-    font-size: 3.5em;
+header>span{
+    margin: auto 7vw 0 auto;
+    font-size: 3.5vw;
     font-weight: 700;
     color: var(--color-font-dark);
+}
+
+header>a{
+    text-decoration: none;
 }
 
 /* Kleines Avatarbild des Benutzers */
@@ -109,11 +165,11 @@ form{
 #avatar{
     border-radius: 50%;
     box-shadow: 0 4px 8px 0 var(--color-shadow), 0 6px 20px 0 var(--color-shadow);
-    height: 150px;
+    height: 9vw;
     width: auto;
     position: relative;
-    margin-top: 10em;
-    margin-left: 7.5em;
+    margin-top: 10vw;
+    margin-left: 2vw;
 }
 
 /* Basis-Informationen */
@@ -122,27 +178,47 @@ form{
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
-    margin-top: 7em;
+    margin-top: 7vw;
 }
 
 #basic-info-box-left{
     display: flex;
     flex-direction: column;
-    margin-left: 6em;
-    font-size: 1.3em;
+    margin-left: 6vw;
+    font-size: 1.3vw;
 }
 
 #bio{
-    max-width: 13.7em;
+    max-width: 13.7vw;
 }
 
 #basic-info-box-right{
     margin-left: auto;
-    margin-right: 8em;
-    font-size: 1.7em;
+    margin-right: 8vw;
+    font-size: 1.7vw;
 }
 
 /* Datenvisualisierung */
+
+#chart-container{
+    padding: 6vw;
+    display: flex;
+    flex-direction: column;
+}
+
+#chart-container>span{
+    margin-bottom: 2vw;
+    font-weight: bolder;
+    font-size: 1.35vw;
+}
+
+#chart-follower{
+    margin-bottom: 2vw;
+}
+
+#chart-time-post{
+    margin-top: 2vw;
+}
 
 /* Lade-Animation */
 #loading-container{
@@ -150,7 +226,7 @@ form{
     display: flex;
     flex-direction: column;
     text-align: center;
-    margin-top: 10em;
+    margin-top: 10vw;
     align-items: center;
 }
 

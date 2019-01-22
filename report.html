@@ -8,6 +8,7 @@
             src="https://code.jquery.com/jquery-3.3.1.min.js"
             integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
             crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <!-- Eigene Imports-->
     <script src="js/dateformat.js"></script>
@@ -17,10 +18,11 @@
 </head>
 <body>
     <div id="main">
-        <div id="header">
+        <header>
             <span id="username"></span>
             <img id="avatar" src="assets/user_placeholder.png" alt="Avatar">
-        </div>
+            <button onclick="window.location = document.referrer" class="button-back"><i class="fa fa-arrow-left"></i></button>
+        </header>
         <div id="basic-info-container">
             <div id="basic-info-box-left">
                 <span id="full-name"><b></b></span>
@@ -51,9 +53,13 @@
             <br>
             <span>Die Daten werden ausgewertet...</span>
         </div>
-        <div id="follower-chart"></div>
-        <div id="hashtag-chart"></div>
-        <div id="time-post-chart"></div>
+        <div id="chart-container">
+            <hr>
+            <span>Report:</span>
+            <div id="chart-follower"></div>
+            <div id="chart-hashtag"></div>
+            <div id="chart-time-post"></div>
+        </div>
     </div>
 </body>
 </html>

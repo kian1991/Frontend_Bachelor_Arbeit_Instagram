@@ -36,7 +36,7 @@ function drawFollowerChart(follower_history) {
 			keepInBounds: true,
 			maxZoomIn: 6.0}
 	};
-	const chart = new google.visualization.LineChart(document.getElementById('follower-chart'));
+	const chart = new google.visualization.LineChart(document.getElementById('chart-follower'));
 	chart.draw(data, options);
 }
 
@@ -83,7 +83,7 @@ function drawMediaTimeEngagementChart(media) {
 			keepInBounds: true,
 			maxZoomIn: 6.0}
 	};
-	const chart = new google.visualization.LineChart(document.getElementById('time-post-chart'));
+	const chart = new google.visualization.LineChart(document.getElementById('chart-time-post'));
 
 	// Links zur weiterleitung an die Instagram Seite
 	google.visualization.events.addListener(chart, 'select', function (e) {
@@ -100,19 +100,10 @@ function drawMediaTimeEngagementChart(media) {
 
 function drawTopTenHashtags(hashtags) {
 
-	let data = new google.visualization.DataTable();
-	let rows = [];
-	//Daten Vorbereiten
-	for(let tag in hashtags){
-		rows.push([
-			tag,
-			hashtags[tag]
-		])
-	}
+	const data = new google.visualization.DataTable();
 
-	// Hashtags sortieren
-	rows = rows.sort(compareHashtag).splice(0,10);
-
+	// Nur die ersten 10 Hashtags nutzen
+	const rows = hashtags.splice(0,10);
 
 	// Daten hinzufügen
 	data.addColumn('string', '');
@@ -132,14 +123,9 @@ function drawTopTenHashtags(hashtags) {
 			keepInBounds: true,
 			maxZoomIn: 6.0}
 	};
-	const chart = new google.visualization.BarChart(document.getElementById('hashtag-chart'));
+	const chart = new google.visualization.BarChart(document.getElementById('chart-hashtag'));
 	chart.draw(data, options);
 }
 
 
 
-// Helper functions
-
-function compareHashtag(hashtagA, hashtagB) {
-	return hashtagB[1] - hashtagA[1];
-}

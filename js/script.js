@@ -3,9 +3,10 @@
  */
 
 // Konstanten
-const API_URL = 'http://api.instalyzer.ml:5000/users/'
+const API_URL = 'http://api.instalyzer.ml:5000/users/';
 const REFRESH_INTERVAL = 10 * 1000; // in ms
-const API_URL_DEBUG = 'http://localhost:5000/users/'
+const INSTAGRAM_URL = 'https://www.instagram.com/';
+const API_URL_DEBUG = 'http://localhost:5000/users/';
 
 
 // Funktionen
@@ -26,7 +27,7 @@ function getUserFromAPI(username, limit) {
 		statusCode: {
 			200: response => {
 				setLoading(false);
-				fillBasicInfo(response) //todo Errorhandling
+				fillBasicInfo(response)
 			},
 			202: response => {
 				fillBasicInfo(response);
@@ -35,6 +36,7 @@ function getUserFromAPI(username, limit) {
 					window.location = 'index.html'
 				}
 				if(response.media_count > 0) setLoading(true);
+				if(response.isPrivate) return; // Nicht nochmal abrufen, wenn Profil Privat ist.
 				setTimeout(() => {
 					getUserFromAPI(username, limit)
 				}, REFRESH_INTERVAL)
@@ -61,7 +63,14 @@ function setPrivate() {
 function fillBasicInfo(accountData){
 	console.log(accountData);
 	$('#avatar').attr('src', accountData.profile_pic_url)
-	$('#username').text(accountData.username)
+	$('#username').html(
+		'<a ' +
+		'href="' + INSTAGRAM_URL + accountData.username+'" ' +
+		'target="_blank" ' +
+		'style="text-decoration: none; color: var(--color-font-dark)">'
+		+ accountData.username +
+		'</a>'
+	);
 	$('#full-name').html('<strong>' + accountData.full_name + '</strong>');
 	$('#bio').text(accountData.biography)
 	$('#follower').text(accountData.follower_count)
@@ -69,7 +78,7 @@ function fillBasicInfo(accountData){
 	$('#media').text(accountData.media_count)
 	if (accountData.is_private){
 		setPrivate();
-	}else  {
+	}else if(accountData.created_at !== undefined) { //Sicherstellen, das der Eintrag aus der Datenbank stammt
 		drawCharts(accountData)
 	}
 }
@@ -85,8 +94,24 @@ function drawCharts(accountData) {
 	}
 	if(accountData.media_count > 0) {
 		google.charts.setOnLoadCallback(() => drawMediaTimeEngagementChart(accountData.media));
-		google.charts.setOnLoadCallback(() => drawTopTenHashtags(accountData.hashtags));
+		google.charts.setOnLoadCallback(() => drawTopTenHashtags(sortHashtagsToArray(accountData.hashtags)));
 	}
+}
+
+
+// Helper functions
+function sortHashtagsToArray(hashtags) {
+	function compareHashtag(hashtagA, hashtagB) {
+		return hashtagB[1] - hashtagA[1];
+	}
+	let sortableHashtagArray = []
+	for(let tag in hashtags){
+		sortableHashtagArray.push([
+			tag,
+			hashtags[tag]
+		])
+	}
+	return sortableHashtagArray.sort(compareHashtag)
 }
 
 
