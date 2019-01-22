@@ -13,7 +13,7 @@ function drawFollowerChart(follower_history) {
 	// Hier wird das Array mit den objekten in ein Array für das Diagramm gemapped
 	// und das Datum in ein Date Objekt gespeichert
 	const rows = follower_history.map(entry => {
-		let arr = Object.values(entry).reverse();
+		let arr = Object.values(entry);
 		arr[0] = new Date(arr[0]*1000);
 		return arr;
 	});
