@@ -8,19 +8,45 @@ const INSTAGRAM_POST_URL = 'https://www.instagram.com/p/';
 /*
 	Diese Funktion ist für die Darstellung des Abonnenten Zugang/Abgang-Diagram
  */
-function drawFollowerChart(follower_history) {
+function drawFollowerChart(follower_history, media=null) {
+	//console.log(media)
+	//console.log(follower_history)
 	let data = new google.visualization.DataTable();
 	// Hier wird das Array mit den objekten in ein Array für das Diagramm gemapped
 	// und das Datum in ein Date Objekt gespeichert
+	let i = 0
 	const rows = follower_history.map(entry => {
 		let arr = Object.values(entry);
-		arr[0] = new Date(arr[0]*1000);
+		let annotation = null;
+		let annotationText = null;
+		/* 	Posts hinzufügen wenn sie in den Zeitraum der Aufnahme fallen
+			Da alle 10 Minuten akutalisiert wird muss überprüft werden 
+			ob dar Beiträg im Rahmen von 600 Sekunden Stattfand	
+		*/
+		if(media.length > 0){
+			for(let i = 0; i < media.length; i++){
+				if(media[i].taken_at <= arr[0]){
+					const entry = media[i]
+				 	media.splice(i)
+					annotation = 'Beitrag';
+					annotationText = generateHTMLString(entry)
+				}
+			}
+		}
+		arr.push(annotation)
+		arr.push(annotationText);
+		arr[0] = new Date(arr[0]*1000); // Den Timestamp in ein JS-Datum umwandeln
 		return arr;
 	});
+
+	// Falls Medien vorhanden sind werden sie als Reihe hinzugefügt
+	
 
 	// Daten hinzufügen
 	data.addColumn('date', 'Zeit');
 	data.addColumn('number', 'Abonnenten');
+	data.addColumn({type: 'string', role: 'annotation'});
+	data.addColumn({type: 'string', role: 'annotationText',p: {html:true}});
 	data.addRows(rows);
 	// Optionen festlegen
 	let options = {
@@ -30,11 +56,18 @@ function drawFollowerChart(follower_history) {
 		},
 		vAxis: {
 			title: 'Abonnenten'
-		},explorer: {
+		},
+		explorer: {
 			actions: ['dragToZoom', 'rightClickToReset'],
 			axis: 'horizontal',
 			keepInBounds: true,
-			maxZoomIn: 6.0}
+			maxZoomIn: 6.0},
+		annotations: {
+			style: 'point'
+		},
+		tooltip: {
+			isHtml: true
+		}
 	};
 	const chart = new google.visualization.LineChart(document.getElementById('chart-follower'));
 	chart.draw(data, options);
@@ -45,18 +78,10 @@ function drawMediaTimeEngagementChart(media) {
 	let rows = []
 	// Daten vorbereiten
 	for(let m of media){
-		let media_url = '';
-		const datetime = new Date(m.taken_at*1000);
-		if(m.image_versions2 === undefined){
-			media_url = m.carousel_media[0].image_versions2.candidates[1].url;
-		}else{
-			media_url = m.image_versions2.candidates[1].url
-		}
 		rows.push([
-			datetime,
+			new Date(m.taken_at),
 			m.engagement_rate,
-			'<img src="' +	media_url + '"><br><div style="margin: 0.25em; text-align: center; font-weight: bolder"> ' +
-			'Zeit: ' + datetime.format("HH:MM") + '</div>',
+			generateHTMLString(m),
 			INSTAGRAM_POST_URL + m.code
 		])
 	}
@@ -127,5 +152,16 @@ function drawTopTenHashtags(hashtags) {
 	chart.draw(data, options);
 }
 
+// helper functions
 
-
+function generateHTMLString(mediaEntry){
+	let media_url = '';
+		const datetime = new Date(mediaEntry.taken_at*1000);
+		if(mediaEntry.image_versions2 === undefined){
+			media_url = mediaEntry.carousel_media[0].image_versions2.candidates[1].url;
+		}else{
+			media_url = mediaEntry.image_versions2.candidates[1].url
+		}
+		return '<img src="' +	media_url + '"><br><div style="margin: 0.25em; text-align: center; font-weight: bolder"> ' +
+			'Zeit: ' + datetime.format("HH:MM") + ' | ER: ' + mediaEntry.engagement_rate.toFixed(2) + '</div>'
+}

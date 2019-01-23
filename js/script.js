@@ -90,7 +90,9 @@ function fillBasicInfo(accountData){
 function drawCharts(accountData) {
 	google.charts.load('current', {packages: ['corechart', 'line']});
 	if(accountData.follower_count_history.length > 1) {
-		google.charts.setOnLoadCallback(() => drawFollowerChart(accountData.follower_count_history));
+		// Nur Medien übergeben, die nach anfang des Monitorings veröffentlich wurden
+		const media = accountData.media.filter(entry => entry.taken_at >= accountData.created_at);
+		google.charts.setOnLoadCallback(() => drawFollowerChart(accountData.follower_count_history, media));
 	}
 	if(accountData.media_count > 0) {
 		google.charts.setOnLoadCallback(() => drawMediaTimeEngagementChart(accountData.media));
