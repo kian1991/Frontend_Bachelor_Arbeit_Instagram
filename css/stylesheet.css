@@ -38,7 +38,7 @@ td {
 
 #main{
     box-shadow: 0 4px 8px 0 var(--color-shadow), 0 6px 20px 0 var(--color-shadow);
-    height: 200%;
+    height: auto;
     background: var(--color-background);
     margin: 3vw;
 }
@@ -46,7 +46,7 @@ td {
 .index{ /* überschreibt Werte der normalen Main ID, für die index-Seite */
     height: 40vw !important;
     margin: 3vw auto auto auto !important;
-    width: 60vw !important;
+    width: 80% !important;
 }
 
 
@@ -83,7 +83,7 @@ td {
 }
 
 .button-back>i{
-    color: var(--color-button);
+    color: var(--color-font-dark);
 }
 
 .button-back>i:hover{
@@ -217,6 +217,11 @@ header>a{
 }
 
 #chart-time-post{
+    margin-top: 2vw;
+}
+
+#chart-post-map{
+    height: 60vw;
     margin-top: 2vw;
 }
 

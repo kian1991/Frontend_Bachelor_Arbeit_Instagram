@@ -75,16 +75,8 @@ function drawFollowerChart(follower_history, media=null) {
 
 function drawMediaTimeEngagementChart(media) {
 	let data = new google.visualization.DataTable();
-	let rows = []
-	// Daten vorbereiten
-	for(let m of media){
-		rows.push([
-			new Date(m.taken_at),
-			m.engagement_rate,
-			generateHTMLString(m),
-			INSTAGRAM_POST_URL + m.code
-		])
-	}
+	let rows = prepareMedia(media);
+
 
 	// Daten hinzufügen
 	data.addColumn('date', 'Zeit');
@@ -128,6 +120,7 @@ function drawTopTenHashtags(hashtags) {
 	const data = new google.visualization.DataTable();
 
 	// Nur die ersten 10 Hashtags nutzen
+	hashtags = sortHashtagsToArray(hashtags);
 	const rows = hashtags.splice(0,10);
 
 	// Daten hinzufügen
@@ -152,7 +145,91 @@ function drawTopTenHashtags(hashtags) {
 	chart.draw(data, options);
 }
 
-// helper functions
+// Die Karte braucht eine globale Variable um die Karten-Informationen der Callback Funktion
+// bereitzustellen
+
+let MAP_DATA = '';
+
+function drawMapCallback(){
+	let map = new google.maps.Map(document.getElementById('chart-post-map'), {
+		center: {lat: -34.397, lng: 150.644},
+		zoom: 0
+	});	
+	// Die Makierungen der Karte hinzufügen und die Bildinformationen hinzufügen
+	// Die InfoBoxen werden zum Einfachen schließen in ein Array gespeichert
+	const infoWindowArray = [];
+	for(loc of MAP_DATA){
+		// Marker
+		const marker = new google.maps.Marker({
+			position: {
+				lat: loc.lat,
+				lng: loc.lng
+			},
+			map: map
+		});
+		// Bildinformationen beim Klick auf den Marker
+		const infowindow = new google.maps.InfoWindow({
+			content: loc.html
+		  });
+		
+		infoWindowArray.push(infowindow);
+		
+		marker.addListener('click', () => {
+			closeInfoWindows()
+			infowindow.open(map, marker);
+		});
+	}
+	// An den Letzten Marker ranzoomen
+	map.setCenter({lat: MAP_DATA[0].lat, lng: MAP_DATA[0].lng})
+	map.setZoom(8)
+	//Falls irgendwo auf der Karte geklickt wird sollen sich alle Boxen schließen
+	map.addListener('click', () => {
+		closeInfoWindows()
+	})
+
+	function closeInfoWindows(){
+		for(info of infoWindowArray){
+			info.close();
+		}
+	}
+}
+
+function drawPostMap(mapData) {
+	//Google Maps Api Key authetifizierung
+	var script = document.createElement('script');
+	script.src = 'https://maps.googleapis.com/maps/api/js?key=KEY&callback=drawMapCallback';
+	document.body.appendChild(script);
+}
+
+
+// Hilfs-Funktionen
+
+function prepareMedia(media){
+		// Die Längen und Breitengrade können hier schonmal 
+		// herausgefiltert und in die golbale Variable
+		// MAP_DATA geschrieben werden.
+		locations = []
+		rows = []
+		for(let m of media){
+			// Falls Geoinformationen verfügbar sind, dem Location-Array hinzufügen
+			if(m.lat !== undefined){
+				locations.push({
+					lat: m.lat,
+					lng: m.lng,
+					html: generateHTMLString(m)
+					})
+			}
+			// Medieninformationen dem 'rows' array hinzufügen
+			rows.push([
+				new Date(m.taken_at),
+				m.engagement_rate,
+				generateHTMLString(m),
+				INSTAGRAM_POST_URL + m.code
+			])
+		}
+		MAP_DATA = locations;
+		return rows;
+}
 
 function generateHTMLString(mediaEntry){
 	let media_url = '';
@@ -164,4 +241,18 @@ function generateHTMLString(mediaEntry){
 		}
 		return '<img src="' +	media_url + '"><br><div style="margin: 0.25em; text-align: center; font-weight: bolder"> ' +
 			'Zeit: ' + datetime.format("HH:MM") + ' | ER: ' + mediaEntry.engagement_rate.toFixed(2) + '</div>'
+}
+
+function sortHashtagsToArray(hashtags) {
+	function compareHashtag(hashtagA, hashtagB) {
+		return hashtagB[1] - hashtagA[1];
+	}
+	let sortableHashtagArray = []
+	for(let tag in hashtags){
+		sortableHashtagArray.push([
+			tag,
+			hashtags[tag]
+		])
+	}
+	return sortableHashtagArray.sort(compareHashtag)
 }

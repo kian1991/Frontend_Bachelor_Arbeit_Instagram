@@ -88,33 +88,22 @@ function fillBasicInfo(accountData){
  **/
 
 function drawCharts(accountData) {
-	google.charts.load('current', {packages: ['corechart', 'line']});
+	google.charts.load('current', {packages: ['corechart', 'line', 'map']});
 	if(accountData.follower_count_history.length > 1) {
 		// Nur Medien übergeben, die nach anfang des Monitorings veröffentlich wurden
 		const media = accountData.media.filter(entry => entry.taken_at >= accountData.created_at);
 		google.charts.setOnLoadCallback(() => drawFollowerChart(accountData.follower_count_history, media));
 	}
 	if(accountData.media_count > 0) {
+		$('.only-visible-if-media').css('display', 'block');
 		google.charts.setOnLoadCallback(() => drawMediaTimeEngagementChart(accountData.media));
-		google.charts.setOnLoadCallback(() => drawTopTenHashtags(sortHashtagsToArray(accountData.hashtags)));
+		google.charts.setOnLoadCallback(() => drawTopTenHashtags(accountData.hashtags));
+		google.charts.setOnLoadCallback(() => drawPostMap(accountData.hashtags));
 	}
 }
 
 
-// Helper functions
-function sortHashtagsToArray(hashtags) {
-	function compareHashtag(hashtagA, hashtagB) {
-		return hashtagB[1] - hashtagA[1];
-	}
-	let sortableHashtagArray = []
-	for(let tag in hashtags){
-		sortableHashtagArray.push([
-			tag,
-			hashtags[tag]
-		])
-	}
-	return sortableHashtagArray.sort(compareHashtag)
-}
+
 
 
 
