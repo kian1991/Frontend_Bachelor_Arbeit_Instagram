@@ -4,7 +4,7 @@
 
 //Konstanten
 const INSTAGRAM_POST_URL = 'https://www.instagram.com/p/';
-
+const GOOGLE_API_KEY = ''
 /*
 	Diese Funktion ist für die Darstellung des Abonnenten Zugang/Abgang-Diagram
  */
@@ -189,7 +189,7 @@ function drawMapCallback(){
 function drawPostMap(mapData) {
 	//Google Maps Api Key authetifizierung
 	var script = document.createElement('script');
-	script.src = 'https://maps.googleapis.com/maps/api/js?key=KEY&callback=drawMapCallback';
+	script.src = 'https://maps.googleapis.com/maps/api/js?key=' + GOOGLE_API_KEY + '&callback=drawMapCallback';
 	document.body.appendChild(script);
 }
 
