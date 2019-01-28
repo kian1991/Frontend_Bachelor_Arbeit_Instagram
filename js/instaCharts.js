@@ -9,11 +9,9 @@ const INSTAGRAM_POST_URL = 'https://www.instagram.com/p/';
 	Diese Funktion ist für die Darstellung des Abonnenten Zugang/Abgang-Diagram
  */
 function drawFollowerChart(follower_history, media=null) {
-	//console.log(media)
-	//console.log(follower_history)
 	let data = new google.visualization.DataTable();
-	// Hier wird das Array mit den objekten in ein Array für das Diagramm gemapped
-	// und das Datum in ein Date Objekt gespeichert
+	// Hier wird das Array mit den objekten in ein Array für das 
+	// Diagramm gemapped und das Datum in ein Date Objekt gespeichert
 	let i = 0
 	const rows = follower_history.map(entry => {
 		let arr = Object.values(entry);
@@ -35,7 +33,8 @@ function drawFollowerChart(follower_history, media=null) {
 		}
 		arr.push(annotation)
 		arr.push(annotationText);
-		arr[0] = new Date(arr[0]*1000); // Den Timestamp in ein JS-Datum umwandeln
+		// Den Timestamp in ein JS-Datum umwandeln
+		arr[0] = new Date(arr[0]*1000); 
 		return arr;
 	});
 
@@ -232,14 +231,25 @@ function prepareMedia(media){
 }
 
 function generateHTMLString(mediaEntry){
-	let media_url = '';
 		const datetime = new Date(mediaEntry.taken_at*1000);
-		if(mediaEntry.image_versions2 === undefined){
-			media_url = mediaEntry.carousel_media[0].image_versions2.candidates[1].url;
-		}else{
-			media_url = mediaEntry.image_versions2.candidates[1].url
+		let mediaUrl = null;
+		if(mediaEntry['media_type'] !== 2){
+			if(mediaEntry.image_versions2 === undefined){ // Falls mehrere Bilder auf einmal gepostet wurden
+				for(entry of mediaEntry.carousel_media){ // wird geprßft ob sich anzeigbare Bilder
+					if(entry['media_type'] !== 2){		// unter ihnen befinden
+						mediaUrl = entry.image_versions2.candidates[1].url;
+					}
+				}
+			}else{
+				mediaUrl = mediaEntry.image_versions2.candidates[1].url
+			}
 		}
-		return '<img src="' +	media_url + '"><br><div style="margin: 0.25em; text-align: center; font-weight: bolder"> ' +
+		// Falls Beitrag ein Video ist, wird die Beschreibung hinzugefüt
+		const caption = mediaEntry['caption']['text'] !== undefined ? mediaEntry['caption']['text'].slice(0,70) + '...' : 'Kein Bild verfügbar' 
+
+		const availableImageData = mediaUrl ? '<img src="' +	mediaUrl  + '">' : '<div style="height: 240;width: 240">' + caption + '</div>';
+
+		return availableImageData + '<br><div style="margin: 0.25em; text-align: center; font-weight: bolder">' +
 			'Zeit: ' + datetime.format("HH:MM") + ' | ER: ' + mediaEntry.engagement_rate.toFixed(2) + '</div>'
 }
 

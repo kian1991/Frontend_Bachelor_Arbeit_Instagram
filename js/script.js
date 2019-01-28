@@ -80,6 +80,8 @@ function fillBasicInfo(accountData){
 		setPrivate();
 	}else if(accountData.created_at !== undefined) { //Sicherstellen, das der Eintrag aus der Datenbank stammt
 		drawCharts(accountData)
+		// EventListener hinzufügen, damit beim verädern der Fenstergröße die Diagramme angepasst werden
+		window.addEventListener('resize', () => drawCharts(accountData)); 
 	}
 }
 
@@ -88,7 +90,8 @@ function fillBasicInfo(accountData){
  **/
 
 function drawCharts(accountData) {
-	google.charts.load('current', {packages: ['corechart', 'line', 'map']});
+	google.charts.load('current', {packages: ['corechart', 'line', 'map'],
+									language: 'de'});
 	if(accountData.follower_count_history.length > 1) {
 		// Nur Medien übergeben, die nach anfang des Monitorings veröffentlich wurden
 		const media = accountData.media.filter(entry => entry.taken_at >= accountData.created_at);
