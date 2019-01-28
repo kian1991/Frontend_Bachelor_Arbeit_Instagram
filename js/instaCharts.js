@@ -1,5 +1,5 @@
 /**
-	Diese Klasse stellt die Funktionen zum darstellen der Diagramme bereit
+	Dieses Script stellt die Funktionen zum darstellen der Diagramme bereit
 **/
 
 //Konstanten
@@ -12,34 +12,27 @@ function drawFollowerChart(follower_history, media=null) {
 	let data = new google.visualization.DataTable();
 	// Hier wird das Array mit den objekten in ein Array für das 
 	// Diagramm gemapped und das Datum in ein Date Objekt gespeichert
-	let i = 0
 	const rows = follower_history.map(entry => {
 		let arr = Object.values(entry);
 		let annotation = null;
-		let annotationText = null;
-		/* 	Posts hinzufügen wenn sie in den Zeitraum der Aufnahme fallen
-			Da alle 10 Minuten akutalisiert wird muss überprüft werden 
-			ob dar Beiträg im Rahmen von 600 Sekunden Stattfand	
-		*/
+		let annotationToolTip = null;
+		
 		if(media.length > 0){
 			for(let i = 0; i < media.length; i++){
 				if(media[i].taken_at <= arr[0]){
 					const entry = media[i]
-				 	media.splice(i)
+				 	media.splice(i) // Eintrag aus Array entfernen
 					annotation = 'Beitrag';
-					annotationText = generateHTMLString(entry)
+					annotationToolTip = generateHTMLString(entry)
 				}
 			}
 		}
 		arr.push(annotation)
-		arr.push(annotationText);
+		arr.push(annotationToolTip);
 		// Den Timestamp in ein JS-Datum umwandeln
 		arr[0] = new Date(arr[0]*1000); 
 		return arr;
 	});
-
-	// Falls Medien vorhanden sind werden sie als Reihe hinzugefügt
-	
 
 	// Daten hinzufügen
 	data.addColumn('date', 'Zeit');

@@ -1,5 +1,5 @@
 /*
-	Dieses Script ist.....
+
  */
 
 // Konstanten
@@ -107,13 +107,18 @@ function drawCharts(accountData) {
 
 
 
+// Dokument hat geladen, initales Limit wird auf 200 gesetzt
 
-
-
-// DEBUG
+let limit = 200;
 
 $(document).ready(function () {
-	getUserFromAPI(getFirstUrlParameter(), 200)
+	getUserFromAPI(getFirstUrlParameter(), limit);
+	$('#select-limit').change(() => {
+		const selected = $(this).find(":selected").text();
+		console.log(selected);
+		selected === 'Zeige alle Beiträge' ? limit = 3000 : limit = parseInt(selected);
+		getUserFromAPI(getFirstUrlParameter(), limit);
+	});
 });
 
 
