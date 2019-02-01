@@ -4,7 +4,7 @@
 
 // Konstanten
 const API_URL = 'http://api.instalyzer.ml:5000/users/';
-const REFRESH_INTERVAL = 10 * 1000; // in ms
+const REFRESH_INTERVAL = 5 * 1000; // in ms
 const INSTAGRAM_URL = 'https://www.instagram.com/';
 const API_URL_DEBUG = 'http://localhost:5000/users/';
 
@@ -43,7 +43,7 @@ function getUserFromAPI(username, limit) {
 			}
 		},
 		error: function (xhr, status) {
-			alert("error");
+			console.log("Error: " + xhr + "Statuscode: " + status);
 		}
 	});
 }

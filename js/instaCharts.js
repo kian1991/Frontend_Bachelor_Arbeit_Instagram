@@ -189,12 +189,13 @@ function drawMapCallback(){
 function drawPostMap(mapData) {
 	//Google Maps Api Key authetifizierung
 	var script = document.createElement('script');
+	// Nach ausführung der Authentifizierung wird die Methode drawMapCallback ausgeführt
 	script.src = 'https://maps.googleapis.com/maps/api/js?key=' + GOOGLE_API_KEY + '&callback=drawMapCallback';
 	document.body.appendChild(script);
 }
 
 
-// Hilfs-Funktionen
+/***** Hilfs-Funktionen *****/
 
 function prepareMedia(media){
 		// Die Längen und Breitengrade können hier schonmal 
