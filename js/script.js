@@ -1,6 +1,3 @@
-/*
-
- */
 
 // Konstanten
 const API_URL = 'http://api.instalyzer.ml:5000/users/';
@@ -11,7 +8,7 @@ const API_URL_DEBUG = 'http://localhost:5000/users/';
 
 // Funktionen
 
-// Read a page's GET URL variables and return them as an associative array.
+// Query-Parameter auslesen
 function getFirstUrlParameter() {
     const query = window.location.href.slice(window.location.href.indexOf('?') + 1);
     return query.split('=')[1];

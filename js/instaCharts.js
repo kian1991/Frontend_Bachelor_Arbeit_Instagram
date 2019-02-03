@@ -140,7 +140,8 @@ function drawTopTenHashtags(hashtags) {
 // Die Karte braucht eine globale Variable um die Karten-Informationen der Callback Funktion
 // bereitzustellen
 
-let MAP_DATA = '';
+let mapData = '';
+let isMapsApiAuthenticated = false;
 
 function drawMapCallback(){
 	let map = new google.maps.Map(document.getElementById('chart-post-map'), {
@@ -150,7 +151,7 @@ function drawMapCallback(){
 	// Die Makierungen der Karte hinzufügen und die Bildinformationen hinzufügen
 	// Die InfoBoxen werden zum Einfachen schließen in ein Array gespeichert
 	const infoWindowArray = [];
-	for(loc of MAP_DATA){
+	for(loc of mapData){
 		// Marker
 		const marker = new google.maps.Marker({
 			position: {
@@ -172,7 +173,7 @@ function drawMapCallback(){
 		});
 	}
 	// An den Letzten Marker ranzoomen
-	map.setCenter({lat: MAP_DATA[0].lat, lng: MAP_DATA[0].lng})
+	map.setCenter({lat: mapData[0].lat, lng: mapData[0].lng})
 	map.setZoom(8)
 	//Falls irgendwo auf der Karte geklickt wird sollen sich alle Boxen schließen
 	map.addListener('click', () => {
@@ -187,11 +188,18 @@ function drawMapCallback(){
 }
 
 function drawPostMap(mapData) {
+	// Prüfen ob die Karte schon einmal geladen hat. Falls js, kann die Authentifizierung übersprungen werden
+	if(isMapsApiAuthenticated){
+		drawMapCallback()
+	}else{
 	//Google Maps Api Key authetifizierung
-	var script = document.createElement('script');
+	let script = document.createElement('script');
 	// Nach ausführung der Authentifizierung wird die Methode drawMapCallback ausgeführt
 	script.src = 'https://maps.googleapis.com/maps/api/js?key=' + GOOGLE_API_KEY + '&callback=drawMapCallback';
 	document.body.appendChild(script);
+	isMapsApiAuthenticated = true;
+	}
+	
 }
 
 
@@ -220,7 +228,7 @@ function prepareMedia(media){
 				INSTAGRAM_POST_URL + m.code
 			])
 		}
-		MAP_DATA = locations;
+		mapData = locations;
 		return rows;
 }
 
